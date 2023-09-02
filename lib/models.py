@@ -22,7 +22,7 @@ class Review(Base):
     restaurant = relationship('Restaurant', back_populates='reviews')
 
     def __repr__(self):
-        return f'Restaurant({self.restaurant_id}) | Customer({self.customer_id}) | Star-rating({self.star_rating}) | {self.description}\n'
+        return f"Review for '{self.restaurant.name} restaurant' by '{self.customer.full_name}': {self.star_rating} stars\n"
 
     @property
     def review_customer(self):
@@ -31,6 +31,28 @@ class Review(Base):
     @property
     def review_restaurant(self):
         return self.restaurant
+
+
+class Restaurant(Base):
+    __tablename__ = 'restaurants'
+
+    id = Column(Integer(), primary_key=True)
+    name = Column(String())
+    price = Column(Integer())
+
+    reviews = relationship('Review', back_populates='restaurant')
+    customers = association_proxy('reviews', 'customer')
+
+    def __repr__(self):
+        return f'{self.name} Restaurant - Price: ${self.price}.00)\n'
+
+    @property
+    def restaurant_reviews(self):
+        return self.reviews
+
+    @property
+    def restaurant_customers(self):
+        return self.customers
 
 
 class Customer(Base):
@@ -88,25 +110,3 @@ class Customer(Base):
         reviews_to_delete.delete()
         session.commit()
         print(f'{self.first_name}\'s reviews for \'{restaurant.name} restaurant\' have been successfully deleted!')
-
-
-class Restaurant(Base):
-    __tablename__ = 'restaurants'
-
-    id = Column(Integer(), primary_key=True)
-    name = Column(String())
-    price = Column(Integer())
-
-    reviews = relationship('Review', back_populates='restaurant')
-    customers = association_proxy('reviews', 'customer')
-
-    def __repr__(self):
-        return f'{self.name} Restaurant - Price: ${self.price}.00)\n'
-
-    @property
-    def restaurant_reviews(self):
-        return self.reviews
-
-    @property
-    def restaurant_customers(self):
-        return self.customers

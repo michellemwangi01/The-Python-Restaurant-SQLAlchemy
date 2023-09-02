@@ -21,8 +21,8 @@ if __name__ == '__main__':
     customers = []
     for i in range(10):
         customer = Customer(
-            first_name=fake.name(),
-            last_name=fake.name()
+            first_name=fake.first_name(),
+            last_name=fake.last_name()
         )
         session.add(customer)
         session.commit()
