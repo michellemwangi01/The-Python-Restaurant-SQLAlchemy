@@ -18,6 +18,7 @@ if __name__ == '__main__':
 
     fake = Faker()
 
+    # ------------------------ Populate customer table --------------------------
     customers = []
     for i in range(10):
         customer = Customer(
@@ -28,6 +29,7 @@ if __name__ == '__main__':
         session.commit()
         customers.append(customer)
 
+    # ----------------------- Populate restaurants table -----------------------
     restaurants = []
     for i in range(10):
         restaurant = Restaurant(
@@ -38,7 +40,7 @@ if __name__ == '__main__':
         session.commit()
         restaurants.append(restaurant)
 
-
+    # ------------------------ Populate reviews table ----------------------------
     reviews = []
     for restaurant in restaurants:
         for i in range(random.randint(1,10)):
