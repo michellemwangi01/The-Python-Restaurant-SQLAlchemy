@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     # import ipdb; ipdb.set_trace()
 
-    res1 = session.query(Restaurant).filter(Restaurant.id == 1).first()
+    res5 = session.query(Restaurant).filter(Restaurant.id == 5).first()
     cus2 = session.query(Customer).filter(Customer.id == 2).first()
     rev1 = Review(
         restaurant_id = 1,
@@ -23,13 +23,37 @@ if __name__ == '__main__':
     )
     # print(res1, cus2)
     # print(res1.reviews)
-    res1.reviews.append(rev1)
-    session.commit()
+    # res5.reviews.append(rev1)
+    # session.commit()
     # print(res1.reviews)
     # print(cus2.reviews.append(rev1))
     # print(session.query(Review).all())
 
-    print(rev1.review_customer())
+    # print(rev1.review_customer())
+    # print(rev1.restaurant())
+
+
+    res5 = session.query(Restaurant).filter(Restaurant.id == 5).first()
+    # print(res5)
+    # print(res5.restaurant_reviews())
+
+    cus10 = session.query(Customer).filter(Customer.id == 10).first()
+    # print(cus10)
+    # print(cus10.customer_reviews())
+    # restaurants = cus10.favorite_restaurant
+    # print(restaurants)
+
+    # print(cus10.add_review(restaurant=res5, rating=8, description="country music"))
+    cus10.delete_reviews(res5)
+    print(cus10.customer_reviews)
+
+
+
+
+
+
+
+
 
 
 

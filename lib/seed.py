@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     reviews = []
     for restaurant in restaurants:
-        for i in range(random.randint(1,3)):
+        for i in range(random.randint(1,10)):
             customer = random.choice(customers)
             review = Review(
                 restaurant_id=restaurant.id,
