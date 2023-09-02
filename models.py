@@ -8,43 +8,9 @@ Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
 
-'''----------------------------------- R E V I E W ------------------------------------------------'''
-class Review(Base):
-    # create Review table name
-    __tablename__ = 'reviews'
-
-    # create class attributes and table columns
-    id = Column(Integer(), primary_key=True)
-    restaurant_id = Column(Integer(), ForeignKey('restaurants.id'))
-    description = Column(String())
-    star_rating = Column(Integer())
-    customer_id = Column(Integer(), ForeignKey('customers.id'))
-
-    # create class relationships as attributes
-    customer = relationship('Customer', back_populates='reviews')
-    restaurant = relationship('Restaurant', back_populates='reviews')
-
-    # represent the class instances
-    def __repr__(self):
-        return (f"Customer({self.customer_id}) | Restaurant({self.restaurant_id}) | start-rating({self.star_rating}) |"
-                f" {self.description}: {self.star_rating} stars\n")
-
-    # return customer
-    @property
-    def review_customer(self):
-        return self.customer
-
-    # return customer
-    @property
-    def review_restaurant(self):
-        return self.restaurant
-
-    def full_review(self):
-        return f"Review for '{self.restaurant.name} restaurant' by '{self.customer.full_name}': {self.star_rating} stars\n"
-
-
 
 '''----------------------------------- R E T A U R A N T -------------------------------------------'''
+
 class Restaurant(Base):
     # define Restaurant table name
     __tablename__ = 'restaurants'
@@ -83,10 +49,12 @@ class Restaurant(Base):
     @classmethod
     def fanciest_restaurant(cls):
         all_restaurants = session.query(cls).all()
-        return f'The fanciest restaurant is {max(all_restaurants, key= lambda restaurant: restaurant.star_rating)}.'
+        return f'The fanciest restaurant is {max(all_restaurants, key=lambda restaurant: restaurant.star_rating)}.'
 
 
 '''------------------------------------ C U S T O M E R ---------------------------------------------'''
+
+
 class Customer(Base):
     # define Restaurant table name
     __tablename__ = 'customers'
@@ -129,10 +97,10 @@ class Customer(Base):
     # return review
     def add_review(self, restaurant, rating, description):
         new_review = Review(
-            restaurant_id = restaurant.id,
-            customer_id = self.id,
-            star_rating = rating,
-            description = description,
+            restaurant_id=restaurant.id,
+            customer_id=self.id,
+            star_rating=rating,
+            description=description,
         )
         session.add(new_review)
         session.commit()
@@ -140,8 +108,48 @@ class Customer(Base):
         return new_review
 
     def delete_reviews(self, restaurant):
-        reviews_to_delete = session.query(Review).filter(Review.restaurant_id == restaurant.id, Review.customer_id == self.id)
+        reviews_to_delete = session.query(Review).filter(Review.restaurant_id == restaurant.id,
+                                                         Review.customer_id == self.id)
         print(reviews_to_delete.all())
         reviews_to_delete.delete()
         session.commit()
         print(f'{self.first_name}\'s reviews for \'{restaurant.name} restaurant\' have been successfully deleted!')
+
+
+
+'''----------------------------------- R E V I E W ------------------------------------------------'''
+
+
+class Review(Base):
+    # create Review table name
+    __tablename__ = 'reviews'
+
+    # create class attributes and table columns
+    id = Column(Integer(), primary_key=True)
+    restaurant_id = Column(Integer(), ForeignKey('restaurants.id'))
+    description = Column(String())
+    star_rating = Column(Integer())
+    customer_id = Column(Integer(), ForeignKey('customers.id'))
+
+    # create class relationships as attributes
+    customer = relationship('Customer', back_populates='reviews')
+    restaurant = relationship('Restaurant', back_populates='reviews')
+
+    # represent the class instances
+    def __repr__(self):
+        return (f"Customer({self.customer_id}) | Restaurant({self.restaurant_id}) | start-rating({self.star_rating}) |"
+                f" {self.description}: {self.star_rating} stars\n")
+
+    # return customer
+    @property
+    def review_customer(self):
+        return self.customer
+
+    # return customer
+    @property
+    def review_restaurant(self):
+        return self.restaurant
+
+    def full_review(self):
+        return f"Review for '{self.restaurant.name} restaurant' by '{self.customer.full_name}': {self.star_rating} stars\n"
+
