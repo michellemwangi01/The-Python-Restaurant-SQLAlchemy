@@ -8,7 +8,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
 
-
+'''----------------------------------- R E V I E W ------------------------------------------------'''
 class Review(Base):
     __tablename__ = 'reviews'
 
@@ -33,6 +33,7 @@ class Review(Base):
         return self.restaurant
 
 
+'''----------------------------------- R E T A U R A N T -------------------------------------------'''
 class Restaurant(Base):
     __tablename__ = 'restaurants'
 
@@ -44,7 +45,13 @@ class Restaurant(Base):
     customers = association_proxy('reviews', 'customer')
 
     def __repr__(self):
-        return f'{self.name} Restaurant - Price: ${self.price}.00)\n'
+        return f'{self.name} Restaurant - Price: ${self.price}.00\n'
+
+    def all_reviews(self):
+        all_reviews_list = [
+            f'Review for {self.name} by {session.query(Customer).filter(Customer.id == review.customer_id).first().full_name}: {review.star_rating} stars.'
+            for review in self.reviews]
+        return all_reviews_list
 
     @property
     def restaurant_reviews(self):
@@ -54,7 +61,13 @@ class Restaurant(Base):
     def restaurant_customers(self):
         return self.customers
 
+    @classmethod
+    def fanciest_restaurant(cls):
+        all_restaurants = session.query(cls).all()
+        return f'The fanciest restaurant is {max(all_restaurants, key= lambda restaurant: restaurant.star_rating)}.'
 
+
+'''------------------------------------ C U S T O M E R ---------------------------------------------'''
 class Customer(Base):
     __tablename__ = 'customers'
 
@@ -81,16 +94,10 @@ class Customer(Base):
         return f'{self.last_name},{self.first_name}'
 
     @property
-    def fanciest_restaurant(self):
-        max_price = max([restaurant.price for restaurant in self.restaurants])
-        return max_price
-
-    @property
     def favorite_restaurant(self):
         best_rated = max(self.reviews, key=lambda review: review.star_rating)
         restaurantid = best_rated.restaurant_id
-        fave_restaurant = [restaurant for restaurant in self.restaurants if restaurant.id == restaurantid]
-        return fave_restaurant
+        return f'{self.full_name}\'s favorite restaurant(s) is {[restaurant for restaurant in self.restaurants if restaurant.id == restaurantid][0]}.'
 
     def add_review(self, restaurant, rating, description):
         new_review = Review(

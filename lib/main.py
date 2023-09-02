@@ -34,18 +34,22 @@ if __name__ == '__main__':
 
 
     res5 = session.query(Restaurant).filter(Restaurant.id == 5).first()
-    # print(res5)
+    # print(res5.restaurant_reviews)
     # print(res5.restaurant_reviews())
 
-    cus10 = session.query(Customer).filter(Customer.id == 10).first()
+    # cus10 = session.query(Customer).filter(Customer.id == 10).first()
     # print(cus10)
     # print(cus10.customer_reviews())
     # restaurants = cus10.favorite_restaurant
     # print(restaurants)
 
     # print(cus10.add_review(restaurant=res5, rating=8, description="country music"))
-    cus10.delete_reviews(res5)
-    print(cus10.customer_reviews)
+    # cus10.delete_reviews(res5)
+    # print(cus10.customer_reviews)
+
+    # print(Restaurant.fanciest_restaurant())
+
+    print(res5.all_reviews())
 
 
 
