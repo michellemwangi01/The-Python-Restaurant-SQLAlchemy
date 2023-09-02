@@ -19,8 +19,10 @@ if __name__ == '__main__':
     rev1 = Review(
         restaurant_id = 1,
         customer_id = 1,
-        star_rating = random.randint(1,10)
+        star_rating = random.randint(1,10),
+        description = "regret is for fools! I praise my mistakes, coz they led me to you!"
     )
+    print(rev1)
     # print(res1, cus2)
     # print(res1.reviews)
     # res5.reviews.append(rev1)
