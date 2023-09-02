@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+
 import random
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from models import *
@@ -23,13 +21,15 @@ if __name__ == '__main__':
         customer_id = 1,
         star_rating = random.randint(1,10)
     )
-    print(res1, cus2)
-    print(res1.reviews)
-    # res1.reviews.append(rev1)
-    # session.commit()
+    # print(res1, cus2)
     # print(res1.reviews)
-    print(cus2.reviews.append(rev1))
-    print(session.query(Review).all())
+    res1.reviews.append(rev1)
+    session.commit()
+    # print(res1.reviews)
+    # print(cus2.reviews.append(rev1))
+    # print(session.query(Review).all())
+
+    print(rev1.review_customer())
 
 
 

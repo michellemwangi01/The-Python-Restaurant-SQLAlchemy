@@ -45,8 +45,11 @@ if __name__ == '__main__':
             customer = random.choice(customers)
             review = Review(
                 restaurant_id=restaurant.id,
-                customer_id=customer.id,
-                star_rating=random.randint(1, 10)
+                description=fake.sentence(),
+                star_rating=random.randint(1, 10),
+                customer_id=customer.id
+
+
             )
             if restaurant not in customer.restaurants:
                 customer.reviews.append(review)
