@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-import random
-from sqlalchemy.orm import sessionmaker
-
 from models import *
 
 Base = declarative_base()
@@ -11,56 +8,64 @@ if __name__ == '__main__':
     engine = create_engine('sqlite:///restaurants.db')
     Session = sessionmaker(bind=engine)
     session = Session()
-
     # import ipdb; ipdb.set_trace()
 
-    res5 = session.query(Restaurant).filter(Restaurant.id == 5).first()
-    cus2 = session.query(Customer).filter(Customer.id == 2).first()
-    rev1 = Review(
-        restaurant_id = 1,
-        customer_id = 1,
-        star_rating = random.randint(1,10),
-        description = "regret is for fools! I praise my mistakes, coz they led me to you!"
-    )
-    print(rev1)
-    # print(res1, cus2)
-    # print(res1.reviews)
-    # res5.reviews.append(rev1)
-    # session.commit()
-    # print(res1.reviews)
-    # print(cus2.reviews.append(rev1))
-    # print(session.query(Review).all())
+    '''----------------------------------- R E T A U R A N T -------------------------------------------'''
+    restaurant1 = session.query(Restaurant).first()
 
-    # print(rev1.review_customer())
-    # print(rev1.restaurant())
+    # return details of all the restaurant instance reviews
+    print('\n-------------------------- all_reviews() -------------------------------')
+    print(restaurant1.all_reviews())
 
+    # return all the restaurant instance reviews
+    print('\n------------------------ restaurant_reviews ---------------------------------')
+    print(restaurant1.restaurant_reviews)
 
-    res5 = session.query(Restaurant).filter(Restaurant.id == 5).first()
-    # print(res5.restaurant_reviews)
-    # print(res5.restaurant_reviews())
+    # return all the customers who have reviewed this restaurant
+    print('\n------------------------- restaurant_customers --------------------------------')
+    print(restaurant1.restaurant_customers)
 
-    # cus10 = session.query(Customer).filter(Customer.id == 10).first()
-    # print(cus10)
-    # print(cus10.customer_reviews())
-    # restaurants = cus10.favorite_restaurant
-    # print(restaurants)
+    print('\n-------------------------- fanciest_restaurant() -------------------------------')
+    # returns the fanciest(most-expensive) restaurant of all the restaurants
+    print(restaurant1.fanciest_restaurant())
 
-    # print(cus10.add_review(restaurant=res5, rating=8, description="country music"))
-    # cus10.delete_reviews(res5)
-    # print(cus10.customer_reviews)
+    '''------------------------------------ C U S T O M E R ---------------------------------------------'''
+    customer1 = session.query(Customer).first()
 
-    # print(Restaurant.fanciest_restaurant())
+    print('\n-------------------------- customer_reviews -------------------------------')
+    # returns the customer reviews
+    print(customer1.customer_reviews)
 
-    print(res5.all_reviews())
+    print('\n-------------------------- customer_restaurants -------------------------------')
+    # returns the customer reviews
+    print(customer1.customer_restaurants)
 
+    print('\n------------------------- full_name --------------------------------')
+    # return customer full_name
+    print(customer1.full_name)
 
+    print('\n----------------------- favorite_restaurant ----------------------------------')
+    # return restaurant with the highest review for this customer
+    print(customer1.favorite_restaurant())
 
+    print('\n---------------------- add_review() -----------------------------------')
+    # add review and return it
+    print(customer1.add_review(restaurant1, 8, "Honey, I'm so high!"))
 
+    print('\n---------------------- delete_reviews() -----------------------------------')
+    # delete reviews that belong to specific restaurants
+    customer1.delete_reviews(restaurant1)
 
+    '''----------------------------------- R E V I E W ------------------------------------------------'''
+    review1 = session.query(Review).first()
+    print('\n--------------------------- review_customer ------------------------------')
+    # return customer
+    print(review1.review_customer)
 
+    print('\n--------------------------- review_restaurant ------------------------------')
+    # return customer
+    print(review1.review_restaurant)
 
-
-
-
-
-
+    print('\n-------------------------- full_review() -------------------------------')
+    # return full review details
+    print(review1.full_review())

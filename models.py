@@ -8,8 +8,8 @@ Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
 
-
 '''----------------------------------- R E T A U R A N T -------------------------------------------'''
+
 
 class Restaurant(Base):
     # define Restaurant table name
@@ -30,10 +30,10 @@ class Restaurant(Base):
 
     # return details of all the restaurant instance reviews
     def all_reviews(self):
-        all_reviews_list = [
-            f'Review for {self.name} by {session.query(Customer).filter(Customer.id == review.customer_id).first().full_name}: {review.star_rating} stars.'
+        return [
+            f'Review for {self.name} by {session.query(Customer).filter(Customer.id == review.customer_id).first().full_name}: {review.star_rating}stars.'
             for review in self.reviews]
-        return all_reviews_list
+
 
     # return all the restaurant instance reviews
     @property
@@ -49,7 +49,7 @@ class Restaurant(Base):
     @classmethod
     def fanciest_restaurant(cls):
         all_restaurants = session.query(cls).all()
-        return f'The fanciest restaurant is {max(all_restaurants, key=lambda restaurant: restaurant.star_rating)}.'
+        return f'The fanciest restaurant is {max(all_restaurants, key=lambda restaurant: restaurant.price)}.'
 
 
 '''------------------------------------ C U S T O M E R ---------------------------------------------'''
@@ -88,13 +88,12 @@ class Customer(Base):
         return f'{self.last_name},{self.first_name}'
 
     # return restaurant with the highest review for this customer
-    @property
     def favorite_restaurant(self):
         best_rated = max(self.reviews, key=lambda review: review.star_rating)
         restaurantid = best_rated.restaurant_id
         return f'{self.full_name}\'s favorite restaurant(s) is {[restaurant for restaurant in self.restaurants if restaurant.id == restaurantid][0]}.'
 
-    # return review
+    # add review and return it
     def add_review(self, restaurant, rating, description):
         new_review = Review(
             restaurant_id=restaurant.id,
@@ -107,14 +106,13 @@ class Customer(Base):
         # session.refresh(new_review)
         return new_review
 
+    # delete reviews that belong to specific restaurants
     def delete_reviews(self, restaurant):
         reviews_to_delete = session.query(Review).filter(Review.restaurant_id == restaurant.id,
                                                          Review.customer_id == self.id)
-        print(reviews_to_delete.all())
         reviews_to_delete.delete()
         session.commit()
         print(f'{self.first_name}\'s reviews for \'{restaurant.name} restaurant\' have been successfully deleted!')
-
 
 
 '''----------------------------------- R E V I E W ------------------------------------------------'''
@@ -150,6 +148,6 @@ class Review(Base):
     def review_restaurant(self):
         return self.restaurant
 
+    # return full review details
     def full_review(self):
         return f"Review for '{self.restaurant.name} restaurant' by '{self.customer.full_name}': {self.star_rating} stars\n"
-
