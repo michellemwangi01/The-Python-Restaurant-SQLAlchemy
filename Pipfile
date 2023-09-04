@@ -12,7 +12,6 @@ ipdb = "0.13.9"
 SQLAlchemy = "1.4.41"
 
 
-
 [requires]
-python_version = "3.10.12"
-
+python_version = "3.10"
+python_full_version = "3.10.12"
